@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route ,Switch } from 'react-router-dom';
 
 import styles from './App.module.css';
 // import Radium, { StyleRoot} from 'radium';
@@ -9,6 +10,8 @@ import BurgerBuilder from '../containers/BurgerBuilder/BurgerBuilder';
 import Aux from '../hoc/Aux/Aux';
 import withClass from '../hoc/withClass';
 import Blog from '../containers/Blog/Blog';
+import Checkout from './Checkout/Checkout';
+import Orders from './Orders/Orders';
 
 export const AuthContext = React.createContext(false);
 
@@ -20,9 +23,9 @@ class App extends Component {
   }
 
   //Discourage to use
-  componentWillMount(){
-    console.log('[App.js] Inside componentWillMount');
-  }
+  // componentWillMount(){
+  //   console.log('[App.js] Inside componentWillMount');
+  // }
 
   componentDidMount(){
     console.log('[App.js] Inside componentDidMount');
@@ -33,9 +36,9 @@ class App extends Component {
     return true; 
   }
   //Discourage to use
-  componentWillUpdate(nextProps,nextState){
-    console.log('[UPDATE App.js] Inside componentWillUpdate',nextProps,nextState); 
-  }
+  // componentWillUpdate(nextProps,nextState){
+  //   console.log('[UPDATE App.js] Inside componentWillUpdate',nextProps,nextState); 
+  // }
 
   static getDerivedStateFromProps(nextProps,prevState){
     console.log('[UPDATE App.js] Inside getDerivedStateFromProps',nextProps,prevState); 
@@ -151,10 +154,16 @@ class App extends Component {
     }
 
     return (
-      // <StyleRoot>    
+      // <StyleRoot>  
+      
+      <React.Fragment>  
       <Aux>
         <Layout>
-           <BurgerBuilder/>
+          <Switch>
+              <Route path="/checkout" component={Checkout} />
+              <Route path="/orders" component={Orders}/>
+              <Route path="/" component={BurgerBuilder} />
+          </Switch>
         </Layout>
         <Cockpit 
             title = {this.props.title}
@@ -168,6 +177,7 @@ class App extends Component {
         
        <h2>Test : {this.state.otherName}</h2>
        </Aux>
+       </React.Fragment>
       // </StyleRoot>
     );
 
