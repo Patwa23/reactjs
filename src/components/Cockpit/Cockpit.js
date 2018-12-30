@@ -15,7 +15,7 @@ const cockpit = (props) => {
     }
     if(props.persons.length<=1){
       classes.push(styles.bold);
-      console.log(classes);
+    //  console.log(classes);
     }
 
     return (

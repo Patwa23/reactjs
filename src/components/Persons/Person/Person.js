@@ -8,29 +8,29 @@ import Aux from '../../../hoc/Aux/Aux';
 import { AuthContext } from '../../../containers/App';
 
 class Person extends Component{
-    constructor(props){
-        super(props);
-        console.log('[Person.js] Inside Constructor',props);
-      }
+    // constructor(props){
+    //     super(props);
+    //    // console.log('[Person.js] Inside Constructor',props);
+    //   }
     
-      componentWillMount(){
-        console.log('[Person.js] Inside componentWillMount');
-      }
+    //   componentWillMount(){
+    //  //   console.log('[Person.js] Inside componentWillMount');
+    //   }
     
       componentDidMount(){
-        console.log('[Person.js] Inside componentDidMount');
+      //  console.log('[Person.js] Inside componentDidMount');
         if(this.props.position === 0){
             this.inputElement.focus();
         }    
       }
 
-      componentWillUnmount(){
-        console.log('[Person.js] Inside componentWillUnmount');
-      }
+    //   componentWillUnmount(){
+    //   //  console.log('[Person.js] Inside componentWillUnmount');
+    //   }
     
 
     render() {
-        console.log('[Person.js] Inside render');
+       // console.log('[Person.js] Inside render');
         return ( 
             <Aux>
                <AuthContext.Consumer>

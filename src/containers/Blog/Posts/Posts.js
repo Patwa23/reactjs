@@ -21,7 +21,7 @@ class Posts extends Component {
     }
 
     componentDidMount(){  
-        console.log("Test2"+this.props);  
+      //  console.log("Test2"+this.props);  
         axios.get('https://jsonplaceholder.typicode.com/posts')
              .then(response=>{
                  const posts= response.data.slice(0,4); //first 4 data

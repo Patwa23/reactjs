@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Route ,Switch } from 'react-router-dom';
+import { Route ,Switch , withRouter ,Redirect} from 'react-router-dom';
+import { connect } from 'react-redux';
+import asyncComponent from './../hoc/asyncComponent/asyncComponent';
 
 import styles from './App.module.css';
 // import Radium, { StyleRoot} from 'radium';
@@ -10,48 +12,61 @@ import BurgerBuilder from '../containers/BurgerBuilder/BurgerBuilder';
 import Aux from '../hoc/Aux/Aux';
 import withClass from '../hoc/withClass';
 import Blog from '../containers/Blog/Blog';
-import Checkout from './Checkout/Checkout';
-import Orders from './Orders/Orders';
+import Logout from './Auth/Logout/Logout';
+import * as actions from '../store/actions/index';
 
 export const AuthContext = React.createContext(false);
 
+const asyncCheckout = asyncComponent(()=> {
+  return import('./Checkout/Checkout');
+});
+
+const asyncOrders = asyncComponent(()=> {
+  return import('./Orders/Orders');
+});
+
+const asyncAuth = asyncComponent(()=> {
+  return import('./Auth/Auth');
+});
+
 class App extends Component {
 
-  constructor(props){
-    super(props);
-    console.log('[App.js] Inside Constructor',props);
-  }
-
-  //Discourage to use
-  // componentWillMount(){
-  //   console.log('[App.js] Inside componentWillMount');
+  // constructor(props){
+  //   super(props);
+  //   console.log('[App.js] Inside Constructor',props);
   // }
+
+  // //Discourage to use
+  // // componentWillMount(){
+  // //   console.log('[App.js] Inside componentWillMount');
+  // // }
 
   componentDidMount(){
-    console.log('[App.js] Inside componentDidMount');
+   // console.log('[App.js] Inside componentDidMount');
+    this.props.onTryAutoSignup();
   }
 
-  shouldComponentUpdate(nextProps,nextState){
-    console.log('[UPDATE App.js] Inside shouldComponentUpdate',nextProps , nextState);
-    return true; 
-  }
-  //Discourage to use
-  // componentWillUpdate(nextProps,nextState){
-  //   console.log('[UPDATE App.js] Inside componentWillUpdate',nextProps,nextState); 
+  // shouldComponentUpdate(nextProps,nextState){
+  //   console.log('[UPDATE App.js] Inside shouldComponentUpdate',nextProps , nextState);
+  //   return true; 
+  // }
+  // //Discourage to use
+  // // componentWillUpdate(nextProps,nextState){
+  // //   console.log('[UPDATE App.js] Inside componentWillUpdate',nextProps,nextState); 
+  // // }
+
+  // static getDerivedStateFromProps(nextProps,prevState){
+  //   console.log('[UPDATE App.js] Inside getDerivedStateFromProps',nextProps,prevState); 
+  //   return prevState;
   // }
 
-  static getDerivedStateFromProps(nextProps,prevState){
-    console.log('[UPDATE App.js] Inside getDerivedStateFromProps',nextProps,prevState); 
-    return prevState;
-  }
+  // getSnapshotBeforeUpdate(){
+  //   console.log('[UPDATE App.js] Inside getSnapshotBeforeUpdate'); 
+  // }
 
-  getSnapshotBeforeUpdate(){
-    console.log('[UPDATE App.js] Inside getSnapshotBeforeUpdate'); 
-  }
-
-  componentDidUpdate(){
-    console.log('[UPDATE App.js] Inside componentDidUpdate');
-  }
+  // componentDidUpdate(){
+  //   console.log('[UPDATE App.js] Inside componentDidUpdate');
+  // }
 
   //Discourage to use - ComponentWillReceiveProps
 
@@ -138,6 +153,26 @@ class App extends Component {
     //   //   color:'black',
     //   // }
     // }
+    let routes = (
+      <Switch>
+        <Route path="/auth" component={asyncAuth}/>
+        <Route path="/" component={BurgerBuilder} />
+        <Redirect to="/pvrburger"/>
+      </Switch>
+    );
+
+    if(this.props.isAuthenticated){
+      routes = (
+        <Switch>
+          <Route path="/checkout" component={asyncCheckout} />
+          <Route path="/orders" component={asyncOrders}/>
+          <Route path="/logout" component={Logout}/>
+          <Route path="/auth" component={asyncAuth}/>
+          <Route path="/" component={BurgerBuilder} />
+          <Redirect to="/pvrburger"/>
+        </Switch>
+      );
+    }
 
     if(this.state.showPersons){
       persons = <Persons 
@@ -154,16 +189,11 @@ class App extends Component {
     }
 
     return (
-      // <StyleRoot>  
-      
+      // <StyleRoot>    
       <React.Fragment>  
       <Aux>
         <Layout>
-          <Switch>
-              <Route path="/checkout" component={Checkout} />
-              <Route path="/orders" component={Orders}/>
-              <Route path="/" component={BurgerBuilder} />
-          </Switch>
+          {routes}
         </Layout>
         <Cockpit 
             title = {this.props.title}
@@ -184,4 +214,16 @@ class App extends Component {
   }
 }
 
-export default withClass(App,styles.App);
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.token !== null
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTryAutoSignup: () => dispatch(actions.authCheckState()) 
+  };
+};
+
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(withClass(App,styles.App)));

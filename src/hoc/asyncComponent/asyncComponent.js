@@ -11,7 +11,7 @@ const asyncComponent = (importComponent) => {
                 .then(cmp =>{
                     this.setState({component:cmp.default});
                 });
-        }
+        } 
 
         render() {
             const C =this.state.component;
